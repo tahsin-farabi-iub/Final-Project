@@ -1,0 +1,349 @@
+/* =========================================================
+   MEAL FINDER — "Passport to Flavor"
+   A recipe search styled like a travel passport: stamped
+   postcards for meal cards, a passport-cover masthead,
+   and a well-worn atlas-paper background.
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ---------- Design tokens ---------- */
+:root {
+  /* Color */
+  --color-parchment: #F6EFE1;   /* page background — atlas paper */
+  --color-card: #FFFCF6;        /* card surface, slightly lighter */
+  --color-ink: #2B241C;         /* body text — warm near-black */
+  --color-teal: #1B4B45;        /* primary — passport cover */
+  --color-teal-dark: #123330;   /* teal, pressed / shadow state */
+  --color-marigold: #D9A441;    /* accent — wax seal / stamps */
+  --color-marigold-dark: #B9822C;
+  --color-marigold-light: #E3B563; /* AA-safe marigold for text on teal */
+  --color-paprika: #C1442E;     /* rare highlight — hover only */
+
+  /* Type */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Courier New', monospace;
+
+  /* Rhythm */
+  --gutter: clamp(20px, 4vw, 48px);
+  --radius: 3px;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body, h1, h2, h3, p { margin: 0; }
+img { max-width: 100%; display: block; }
+button { font: inherit; }
+
+/* ---------- Base ---------- */
+body {
+  background-color: var(--color-parchment);
+  background-image: radial-gradient(rgba(27, 75, 69, 0.07) 1px, transparent 1.6px);
+  background-size: 24px 24px;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* Hide stray line breaks left in the markup — spacing is handled
+   by flex/grid gaps instead so layout stays consistent. */
+main > br,
+.search-bar br {
+  display: none;
+}
+
+/* ---------- Header (the passport cover) ---------- */
+.site-header {
+  background: var(--color-teal);
+  background-image:
+    radial-gradient(rgba(246, 239, 225, 0.05) 1px, transparent 1.6px);
+  background-size: 18px 18px;
+  color: var(--color-parchment);
+  text-align: center;
+  padding: 64px 20px 44px;
+  border-bottom: 4px double var(--color-marigold);
+}
+
+.site-header h2 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(2.1rem, 5vw, 3.4rem);
+  letter-spacing: 0.01em;
+}
+
+.site-header .tagline {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.72rem;
+  color: var(--color-marigold-light);
+}
+
+/* ---------- Search bar (the control desk) ---------- */
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: var(--gutter) 0;
+}
+
+#searchInput {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-ink);
+  background: transparent;
+  min-width: min(320px, 80vw);
+  padding: 10px 4px;
+  border: none;
+  border-bottom: 2px solid rgba(43, 36, 28, 0.35);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+#searchInput:hover { border-bottom-color: var(--color-ink); }
+
+#searchInput:focus { border-bottom-color: var(--color-teal); }
+
+#searchInput:focus-visible {
+  outline: 2px dashed var(--color-marigold-dark);
+  outline-offset: 6px;
+}
+
+#searchBtn {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  color: var(--color-teal-dark);
+  background: var(--color-marigold);
+  border: 2px solid var(--color-teal);
+  border-radius: 999px;
+  padding: 13px 28px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--color-teal);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+}
+
+#searchBtn:hover { background: var(--color-marigold-dark); }
+
+#searchBtn:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--color-teal);
+}
+
+#searchBtn:focus-visible {
+  outline: 3px dashed var(--color-paprika);
+  outline-offset: 4px;
+}
+
+/* ---------- Results grid ---------- */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 40px 24px;
+  padding: 12px 0 8px;
+  min-height: 120px;
+}
+
+/* Empty state — shown before a search, or when nothing matches */
+.results-grid:empty::before {
+  content: "No stamps in the album yet — search a dish or a country to start your collection.";
+  grid-column: 1 / -1;
+  padding: 56px 20px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: rgba(43, 36, 28, 0.7);
+}
+
+/* ---------- Meal card (the postcard / stamp) ---------- */
+.meal-card {
+  position: relative;
+  background: var(--color-card);
+  border: 1px solid rgba(43, 36, 28, 0.12);
+  border-radius: var(--radius);
+  padding: 18px 14px 22px;
+  box-shadow: 0 6px 18px rgba(43, 36, 28, 0.12);
+  transform: rotate(var(--tilt, -1deg));
+  animation: stampIn 0.5s ease both;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.meal-card:nth-child(odd)  { --tilt: -1.1deg; }
+.meal-card:nth-child(even) { --tilt: 0.9deg; }
+.meal-card:nth-child(3n)   { --tilt: -0.4deg; }
+
+.meal-card:nth-child(1) { animation-delay: 0.02s; }
+.meal-card:nth-child(2) { animation-delay: 0.08s; }
+.meal-card:nth-child(3) { animation-delay: 0.14s; }
+.meal-card:nth-child(4) { animation-delay: 0.2s; }
+.meal-card:nth-child(5) { animation-delay: 0.26s; }
+.meal-card:nth-child(n+6) { animation-delay: 0.3s; }
+
+.meal-card:hover {
+  transform: rotate(0deg) translateY(-6px);
+  box-shadow: 0 16px 30px rgba(43, 36, 28, 0.18);
+  border-color: var(--color-marigold-dark);
+}
+
+/* Perforated "stamp edge" along the top of every card */
+.meal-card::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 10px;
+  right: 10px;
+  height: 12px;
+  background-image: radial-gradient(circle, var(--color-parchment) 6px, transparent 6.5px);
+  background-size: 16px 16px;
+  background-position: -4px -4px;
+  background-repeat: repeat-x;
+}
+
+.meal-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 2px;
+  background: rgba(43, 36, 28, 0.06); /* placeholder tone while loading / on broken image */
+}
+
+/* Postmark badge carrying the meal ID, stamped over the photo corner */
+.meal-id {
+  position: absolute;
+  top: 30px;
+  right: 26px;
+  width: 68px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6px;
+  border-radius: 50%;
+  border: 2px dashed var(--color-teal);
+  background: rgba(255, 252, 246, 0.88);
+  color: var(--color-teal);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  transform: rotate(-11deg);
+}
+
+.meal-info {
+  padding-top: 14px;
+}
+
+.meal-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.15rem;
+  line-height: 1.28;
+  color: var(--color-ink);
+  margin-bottom: 10px;
+}
+
+.meal-instructions {
+  font-size: 0.9rem;
+  color: rgba(43, 36, 28, 0.78);
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+/* ---------- Show All button (a ticket stub) ---------- */
+.show-all-btn {
+  display: block;
+  margin: 8px auto 56px;
+  padding: 14px 34px;
+  background: transparent;
+  color: var(--color-teal);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 2px dashed var(--color-teal);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.show-all-btn:hover {
+  background: var(--color-teal);
+  color: var(--color-parchment);
+  border-color: var(--color-teal);
+}
+
+.show-all-btn:focus-visible {
+  outline: 3px dashed var(--color-paprika);
+  outline-offset: 4px;
+}
+
+/* ---------- Footer (the passport's last page) ---------- */
+.site-footer {
+  text-align: center;
+  padding: 26px var(--gutter) 44px;
+  border-top: 2px dashed rgba(43, 36, 28, 0.28);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: rgba(43, 36, 28, 0.72);
+}
+
+.site-footer p { margin: 4px 0; }
+
+.site-footer a {
+  color: var(--color-teal);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.site-footer a:hover { color: var(--color-paprika); }
+
+/* ---------- Motion ---------- */
+@keyframes stampIn {
+  from { opacity: 0; transform: translateY(14px) rotate(var(--tilt, 0deg)) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)     rotate(var(--tilt, 0deg)) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .meal-card {
+    animation: none;
+    transform: none !important;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .meal-card:hover { transform: none; }
+  #searchBtn, .show-all-btn { transition: background 0.2s ease, color 0.2s ease; }
+  #searchBtn:active { transform: none; }
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 520px) {
+  .site-header { padding: 48px 16px 32px; }
+  #searchInput { min-width: 100%; }
+  .search-bar { flex-direction: column; align-items: stretch; text-align: center; }
+  .meal-id { width: 58px; height: 58px; font-size: 0.52rem; top: 22px; right: 18px; }
+}
